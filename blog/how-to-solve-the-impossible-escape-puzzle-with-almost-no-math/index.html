@@ -1,0 +1,87 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="Christian Abbott"><title>How to solve the Impossible Escape puzzle with almost no math | Creatively... Do!</title><link rel="icon" href="/static/img/favicon.ico" sizes="16x16"><link rel="stylesheet" href="/static/css/main.d937955df70f008c0984.min.css"><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)
+</script><script>let _gaq = _gaq || []
+_gaq.push(['_setAccount', 'UA-35393164-2'])
+_gaq.push(['_trackPageview'])
+(function() {
+  let ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'
+  let s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s)
+})()</script></head><body><div id="main-grid"><header id="site-header"><a id="header-home" href="/">Creatively&nbsp;Do!</a><input id="header-menu-btn" type="checkbox"><label id="header-menu-icon" for="header-menu-btn"><div class="header-nav-icon"></div><div class="header-nav-icon header-nav-icon-mid"></div><div class="header-nav-icon"></div></label><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav></header><main><div id="border"><div id="pushin"><h1 id="page-title">How to solve the Impossible Escape puzzle with almost no math</h1><nav class="breadcrumb"><a href="/">Home</a><a href="/blog/">Blog</a>How to solve the Impossible Escape puzzle with almost no math</nav><div><article id="blog-article"><p>You and a friend are imprisoned but have a chance for freedom. To earn it, you must walk
+alone into a separate room where a chess board is laid out with a coin per square randomly
+showing heads or tails. You are shown a particular square on the chess board, and are then
+allowed to touch one coin to flip it. Then you must leave without making any contact with
+your friend. Your friend enters the room and must pick the square which was pointed out to
+you. You and your friend may discuss a strategy before you enter the room.
+</p><p><a href="https://datagenetics.com/blog/december12014/index.html" target="_blank">This site</a> contains the
+problem in more detail, along with the solution in mathematical terminology.  However, I
+thought I'd share the way that I thought through this problem using plain English, without
+the mathematical language.
+</p><p><a href="#" onclick="document.getElementById(&quot;solution&quot;).style.display = &quot;block&quot;">Click here to show the solution</a>
+(if you prefer, think it through yourself before clicking)</p><div id="solution" style="display: none;"><h2>How to solve it</h2><p>One big clue is that we have to use coins in this puzzle to transfer information. Coins
+can be heads or tails. This suggests the information we send to the other prisoner about
+which square leads to freedom might be done through using yes/no questions. In other words,
+a yes/no question can be answered by which side of a coin is face up.
+</p><h3>Using yes/no questions to locate the square</h3><p>Let's see if that idea would work.</p><p>First we have to know if a series of yes/no questions can uniquely determine the square's
+location. Clearly, yes. For example, I could ask
+<em>"Is it square number 1? Number 2? Number 3?..."</em> until the answer is yes. But that's
+inefficient. I only eliminate one square at a time. What's the best question to eliminate
+the most squares? I can eliminate half the squares at a time by asking questions which
+successively split the board in two parts.
+</p><p>Here is one possible series of questions which cut the board in half each time:</p><ol><li>Is the square in the left half or right half of the board?</li><li>Is it in the top half or bottom half of the board?</li><li>At this point, we know which quadrant the square is in. Using that 4x4 quadrant as a
+new "board", ask the above two questions again, narrowing it down to a 2x2 area.</li><li>Ask the first two questions once more about the 2x2 area, and we'll have narrowed it
+down to the exact square.
+</li></ol><p>This makes 6 questions total, and that's very efficient. In fact, mathematically, you
+can't do better than 6 questions, but we won't get into that.
+</p><p>We should agree with our fellow prisoner in advance on the 6 specific ordered questions to
+use. Can we figure out a way to indicate the answer to the 6 yes/no questions using the
+coins? If we had 6 coins available to change, we'd be home free. In that case, we would
+simply plan with the other prisoner to set the first 6 coins as the answers, with heads
+meaning "yes" and tails meaning "no". But, we can only touch one coin on the board. This
+is the hard part.
+</p><h3>Combining coins</h3><p>The next realization to make is that we don't necessarily need to just use single coins to
+represent the answers "yes" and "no". We can instead look for a way to use specific groups
+of coins to somehow produce answers to each question. In that case, it might be possible
+to cleverly structure the coins into groups so that some coins belonged to multiple groups.
+That way, flipping one coin could actually affect some or all of the question's answers.
+</p><p>How might that work? Let's think it through.</p><p>First, is there a way to use a group of coins to get a single yes/no answer such that
+changing one coin in the group changes the answer? Yes. We can check whether the group of
+coins has an even or odd number of heads. An even number of heads can mean "yes", and an
+odd number can mean "no". This way, flipping any one coin in the group changes the answer
+for that group.
+</p><p>Now, how can we arrange the groups? We have 64 available coins, and we'll need 6 groups
+(one group per question). Once we know which coins form each group, then the randomly
+placed coins will automatically create 6 random answers. We can then figure out which
+answers need to change. We want a coin available that belongs to only the groups for the
+answers we want to change. Therefore, we need some coins which belong to only one group,
+and other coins which belong to several groups at once. And each possible combination of
+groups must have one coin somewhere on the board which is unique to that group combination.
+</p><h3>Building the groups</h3><p>To see how we might accomplish this, let's first simplify it and imagine we only need 2
+groups. What would that simpler scenario look like?
+</p><p>We'll make the first square only belong to the first group. Changing that coin only changes
+the first answer. Similarly, let's make the second square only belong to the second group
+so we have a way to only change the second answer. Finally, we'll make the third coin
+belong to both groups, so that we have a way to change both answers simultaneously with
+one coin flip. A map indicating which squares belong to which groups would look like this:
+</p><div class="checkerboard"><div>1</div><div>2</div><div>1,2</div></div><p>We just used 3 coins to create 2 groups such that we can choose a coin to change either
+or both answers any way we like by one flip. No matter what the initial random layout is
+of those 3 coins, we can figure out which answers need to change, and then flip one coin
+to change just the specific answers we need.
+</p><p>That's impressive.</p><p>But that's the simple imaginary scenario of just 2 yes/no questions. What would the groups
+look like for 3 questions? Again, we need a square for every possible combination of
+questions. That would take 7 squares and look like this:
+</p><div class="checkerboard"><div>1</div><div>2</div><div>3</div><div>1,2</div><div>1,3</div><div>2,3</div><div>1,2,3</div></div><p>How many squares do we need for all 6 questions? The grand total is 63. Luckily, we have
+64 squares on a chessboard. Coincidence? This is one possible mapping of squares to groups,
+which you and your fellow prisoner would agree to use beforehand:
+</p><div class="checkerboard"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>1,2</div><div>1,3</div><div>1,4</div><div>1,5</div><div>1,6</div><div>2,3</div><div>2,4</div><div>2,5</div><div>2,6</div><div>3,4</div><div>3,5</div><div>3,6</div><div>4,5</div><div>4,6</div><div>5,6</div><div>1,2,3</div><div>1,2,4</div><div>1,2,5</div><div>1,2,6</div><div>1,3,4</div><div>1,3,5</div><div>1,3,6</div><div>1,4,5</div><div>1,4,6</div><div>1,5,6</div><div>2,3,4</div><div>2,3,5</div><div>2,3,6</div><div>2,4,5</div><div>2,4,6</div><div>2,5,6</div><div>3,4,5</div><div>3,4,6</div><div>3,5,6</div><div>4,5,6</div><div>1,2,3,4</div><div>1,2,3,5</div><div>1,2,3,6</div><div>1,2,4,5</div><div>1,2,4,6</div><div>1,2,5,6</div><div>1,3,4,5</div><div>1,3,4,6</div><div>1,3,5,6</div><div>1,4,5,6</div><div>2,3,4,5</div><div>2,3,4,6</div><div>2,3,5,6</div><div>2,4,5,6</div><div>3,4,5,6</div><div>1,2,3,<br>4,5</div><div>1,2,3,<br>4,6</div><div>1,2,3,<br>5,6</div><div>1,2,4,<br>5,6</div><div>1,3,4,<br>5,6</div><div>2,3,4,<br>5,6</div><div>1,2,3,<br>4,5,6</div><div></div></div><h3>Putting it all together</h3><p>And so, to sum up, your strategy would be:</p><ol><li>Take the above mapping into the room (or memorize the pattern) and look at the
+chessboard with the random coins.</li><li>The jailer tells you the secret square to your freedom.</li><li>Determine what the answers to the 6 questions should be for locating that square.</li><li>Look at your map, find all squares with "1", and count heads in those squares.</li><li>Remember this question if the count of heads leads to the wrong answer for question #1
+(remembering that an even number of heads means "yes" and an odd number means "no").</li><li>Repeat the above two steps for all 6 questions.</li><li>You now know which question numbers need to be changed. Find the one square on your map
+that contains that unique combination of numbers, and flip that coin so that just those
+answers change.</li><li>Leave the room and your fellow prisoner will use a copy of the same mapping and
+questions to find the right square and earn your freedom.
+</li></ol><p>At this point, the jailer is likely to be hopping mad, so you might want to just go. Quickly.</p></div></article><p class="blog-date">Posted 2/12/2015</p><div id="blog-categories"><h3><a href="/blog/category/">Blog Categories</a></h3><ul><li><a href="/blog/category/django/">django</a>
+(2)</li><li><a href="/blog/category/environment/">environment</a>
+(1)</li><li><a href="/blog/category/math/">math</a>
+(2)</li><li><a href="/blog/category/python/">python</a>
+(2)</li><li><a href="/blog/category/tango/">tango</a>
+(5)</li><li><a href="/blog/category/web-development/">web development</a>
+(1)</li></ul></div></div></div></div></main><footer id="site-footer"><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav><span id="copyright">&copy;2012-2022 Christian&nbsp;Abbott | <a href="/contact/">Contact</a></span></footer></div></body></html>

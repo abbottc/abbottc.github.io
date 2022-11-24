@@ -1,0 +1,66 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="Christian Abbott"><title>How to Understand Injective Functions, Surjective Functions, and Bijective Functions | Creatively... Do!</title><link rel="icon" href="/static/img/favicon.ico" sizes="16x16"><link rel="stylesheet" href="/static/css/main.d937955df70f008c0984.min.css"><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)
+</script><script>let _gaq = _gaq || []
+_gaq.push(['_setAccount', 'UA-35393164-2'])
+_gaq.push(['_trackPageview'])
+(function() {
+  let ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'
+  let s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s)
+})()</script></head><body><div id="main-grid"><header id="site-header"><a id="header-home" href="/">Creatively&nbsp;Do!</a><input id="header-menu-btn" type="checkbox"><label id="header-menu-icon" for="header-menu-btn"><div class="header-nav-icon"></div><div class="header-nav-icon header-nav-icon-mid"></div><div class="header-nav-icon"></div></label><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav></header><main><div id="border"><div id="pushin"><h1 id="page-title">How to Understand Injective Functions, Surjective Functions, and Bijective Functions</h1><nav class="breadcrumb"><a href="/">Home</a><a href="/blog/">Blog</a>How to Understand Injective Functions, Surjective Functions, and Bijective Functions</nav><div><article id="blog-article"><h3>One way to think of functions</h3><p>Functions are easily thought of as a way of matching up numbers from one set with numbers of
+another. The function <code>f(x)=x+3</code>, for example, is just a way of saying that I'm matching
+up the number 1 with the number 4, the number 2 with the number 5, etc. A different example
+would be the absolute value function which matches both -4 and +4 to the number +4. Think of
+functions as matchmakers.
+</p><h3>Functions may be "injective" (or "one-to-one")</h3><p>An injective function is a matchmaker that is not from Utah. There are no polyamorous matches
+like the absolute value function, there are just one-to-one matches like <code>f(x)=x+3</code>.
+</p><p>Lets take two sets of numbers A and B. Say we know an injective function exists between them.
+That means we know every number in A has a single unique match in B. But, we don't know whether
+there are any numbers in B that are "left out" and aren't matched to anything. If you think
+about it, this implies the size of set A must be less than or equal to the size of set B.
+That's an important consequence of injective functions, which is one reason they come up a lot.
+</p><div class="function-example"><p class="function-example-section"><span class="function-example-lead">Example:</span><code>f(x) = x!</code> (the <a href="https://en.wikipedia.org/wiki/Factorial" target="_blank">factorial function</a>)
+where both sets A and B are the set of all positive integers (1, 2, 3...).</p><p class="function-example-section"><span class="function-example-lead">Why it's injective:</span>Everything in set A matches to something in B because factorials only produce positive
+integers. And no duplicate matches exist, because 1! < 2! < 3! < 4!... meaning none of the
+factorials will be the same number. Note that in this example, there are numbers in B which
+are unmatched (e.g. 3, 4, 5, or 7). Remember that injective functions don't mind whether
+some of B gets "left out".
+</p></div><h3>Functions may be "surjective" (or "onto")</h3><p>There are also surjective functions. Surjective functions are matchmakers who make sure they
+find a match for all of set B, and who don't mind using polyamory to do it. So, if you know a
+surjective function exists between set A and B, that means every number in B is matched to
+one or more numbers in A. Again if you think about it, this implies that the size of set A
+must be greater than or equal to the size of set B. Another important consequence.
+</p><div class="function-example"><p class="function-example-section"><span class="function-example-lead">Example:</span><code>f(x) = x<sup>2</sup></code> where A is the set of real numbers and B is the set of non-negative
+real numbers.</p><p class="function-example-section"><span class="function-example-lead">Why it's surjective:</span>The entirety of set B is matched because every non-negative real number has a real number
+which squares to it (namely, its square root). Note that in this example, polyamory is
+pervasive, because nearly all numbers in B have 2 matches from A (the positive and negative
+square root).
+</p></div><h3>Bijective Functions</h3><p>Finally, a bijective function is one that is both injective and surjective. If a bijective
+function exists between A and B, then you know that the size of A is less than or equal to B
+(from being injective), and that the size of A is also greater than or equal to B (from being
+surjective). The only possibility then is that the size of A must in fact be exactly equal to
+the size of B. Just like if a value x is less than or equal to 5, and also greater than or
+equal to 5, then it can only be 5.
+</p><div class="function-example"><p class="function-example-section"><span class="function-example-lead">Example:</span><code>f(x) = 2x</code> where A is the set of integers and B is the set of even integers.</p><p class="function-example-section"><span class="function-example-lead">Why it's bijective:</span>All of A has a match in B because every integer when doubled becomes even. This match is
+unique because when we take half of any particular even number, there is only one possible
+result. This makes the function injective. The function is also surjective because
+nothing in B is "left over", that is, there is no even integer that can't be found by
+doubling some other integer. Since the matching function is both injective and surjective,
+that means it's bijective, and consequently, both A and B are exactly the same size. If
+you think about what A and B contain, intuition would lead to the assumption that B might
+be half the size of A. But surprisingly, intuition turns out to be wrong here. And this
+leads to our conclusion...
+</p></div><h3>How this relates to infinite sets</h3><p>So, for any two sets where you can find a bijective function between them, you know the sets
+are exactly the same size. Even infinite sets. This is how Georg Cantor was able to show
+which infinite sets were the same size. He found bijections between them.
+</p><p>Cantor was able to show which infinite sets were strictly smaller than others by
+demonstrating how any possible injective function existing between them still left unmatched
+numbers in the second set. In other words, any function which used up all of A in uniquely
+matching to B still didn't use up all of B. Therefore, B must be bigger in size.
+</p><p>Cantor proceeded to show there were an infinite number of sizes of infinite sets! But
+perhaps I'll save that remarkable piece of mathematics for another time.</p></article><p class="blog-date">Posted 1/25/2013</p><div id="blog-categories"><h3><a href="/blog/category/">Blog Categories</a></h3><ul><li><a href="/blog/category/django/">django</a>
+(2)</li><li><a href="/blog/category/environment/">environment</a>
+(1)</li><li><a href="/blog/category/math/">math</a>
+(2)</li><li><a href="/blog/category/python/">python</a>
+(2)</li><li><a href="/blog/category/tango/">tango</a>
+(5)</li><li><a href="/blog/category/web-development/">web development</a>
+(1)</li></ul></div></div></div></div></main><footer id="site-footer"><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav><span id="copyright">&copy;2012-2022 Christian&nbsp;Abbott | <a href="/contact/">Contact</a></span></footer></div></body></html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="Christian Abbott"><title>User-friendly Django CSRF Protection | Creatively... Do!</title><link rel="icon" href="/static/img/favicon.ico" sizes="16x16"><link rel="stylesheet" href="/static/css/main.d937955df70f008c0984.min.css"><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)
+</script><script>let _gaq = _gaq || []
+_gaq.push(['_setAccount', 'UA-35393164-2'])
+_gaq.push(['_trackPageview'])
+(function() {
+  let ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'
+  let s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s)
+})()</script></head><body><div id="main-grid"><header id="site-header"><a id="header-home" href="/">Creatively&nbsp;Do!</a><input id="header-menu-btn" type="checkbox"><label id="header-menu-icon" for="header-menu-btn"><div class="header-nav-icon"></div><div class="header-nav-icon header-nav-icon-mid"></div><div class="header-nav-icon"></div></label><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav></header><main><div id="border"><div id="pushin"><h1 id="page-title">User-friendly Django CSRF Protection</h1><nav class="breadcrumb"><a href="/">Home</a><a href="/blog/">Blog</a>User-friendly Django CSRF Protection</nav><div><article id="blog-article"><p>The fact that Django comes with CSRF protection is extremely nice. Unless, of course, your
+hobby is exploiting websites, in which case get off my site. For the rest of us, thwart those
+baddies by using Django's <code>CsrfViewMiddleware</code> and the <code>csrf_token</code> tag. But when
+you do, keep in mind what that changes on your webpages. The <code>csrf_token</code> tag sets a
+cookie. So, that begs the question:
+</p><p>What about legitimate users that have their cookies disabled?</p><h3>User-Unfriendliness</h3><p>Sure, it's a fringe case, but let's address it, because it's easy. If Django can't set that
+cookie when the user submits the form, by default the user will see a 403 Forbidden error
+page that looks something like this:
+</p><div id="django-forbidden"><div><div>Forbidden <span>(403)</span></div><p>CSRF verification failed. Request aborted.</p></div><div><p><small>More information is available with DEBUG=True.</small></p></div></div><p>Yuck. For all intents and purposes, you just did the webdeveloper's equivalent of backhanding
+one of your unsuspecting users. It was probably someone's grandmother on a locked-down public
+library computer who now thinks she accidentally caused the local police to be notified.
+Are you proud of yourself?
+</p><h3>One (somewhat) easy way out</h3><p>Django, like usual, has your back. You can add something like this to <code>settings.py</code>:</p><pre class="lang-python"><code>CSRF_FAILURE_VIEW <span class="token operator">=</span> <span class="token string">'path.to.friendly_csrf_failure_view'</span></code></pre><p>Then create a view method with the name and path you supplied in that variable. Django will
+use your view instead of the sinister-looking 403 Forbidden page that worries grandmothers.
+Instead you can send them to a calming sky-blue page with a big yellow smiley face that asks
+if maybe they've disabled cookies. Thanks Django for providing a way out.
+</p><h3>Even more friendly</h3><p>But hang on, why wait until after grandma submits the form to lecture about cookies? We can
+do better, and we don't even need Django hooks for it. All we care about is that users with
+cookies disabled don't get slapped with the Forbidden error. We don't need to override the
+error page, we just need to test whether cookies work when the user first visits our form
+page. Then we can display a message to the user right then and there. Plus, we can keep the
+user from filling in the form before they've enabled cookies. This sounds like a job for
+JavaScript.
+</p><p>Here's an example of what to do using JQuery combined with
+<a href="https://github.com/carhartl/jquery-cookie/blob/master/jquery.cookie.js" target="_blank">jquery.cookie.js</a>.
+</p><p>With JQuery and jquery.cookie.js included on the page, add something like this code snippet
+to your form page:
+</p><pre class="lang-html"><code><span class="token comment">&lt;!-- Replace any text in <span class="code-em">yellow</span> for use on your site --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Try creating a test cookie</span>
+    $<span class="token punctuation">.</span><span class="token function">cookie</span><span class="token punctuation">(</span><span class="token string">'test_cookie'</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// Check if it can be read...</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>$<span class="token punctuation">.</span><span class="token function">cookie</span><span class="token punctuation">(</span><span class="token string">'test_cookie'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Our test cookie worked!</span>
+        <span class="token comment">// So, just delete it, and everything will work fine</span>
+        $<span class="token punctuation">.</span><span class="token function">cookie</span><span class="token punctuation">(</span><span class="token string">'test_cookie'</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Cookies didn't work, so inject some</span>
+        <span class="token comment">// instructions to the user</span>
+        <span class="token keyword">var</span> html <span class="token operator">=</span> <span class="token string">'&lt;p id="cookie_warning">'</span> <span class="token operator">+</span>
+            <span class="token string">'This form requires cookies, which are disabled on your browser.'</span> <span class="token operator">+</span>
+            <span class="token string">'&lt;br>Please enable cookies by following '</span> <span class="token operator">+</span>
+            <span class="token string">'&lt;a target="_blank" href="<span class="code-em">/path/to/instructions</span>">'</span> <span class="token operator">+</span>
+            <span class="token string">'these instructions&lt;/a>, and then &lt;a href="<span class="code-em">/url/of/this/page</span>">'</span> <span class="token operator">+</span>
+            <span class="token string">'click here&lt;/a> to use the form.&lt;/p>'</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> my_form <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#<span class="code-em">my_form_id</span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        my_form<span class="token punctuation">.</span><span class="token function">prepend</span><span class="token punctuation">(</span>html<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// Now disable all the form elements</span>
+        my_form<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token string">':input:not(:disabled)'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">'disabled'</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span></code></pre><p>And that's it. A few lines of code and your site is grandmother-worthy. If cookies are
+disabled, the user will never see a 403 Forbidden. Instead, the user will get instructions
+and the form won't be active until they follow them. The instructions open in a separate
+window, so the user doesn't leave your form page. For bonus friendliness, you can also do the
+following:
+</p><ul><li>style the message using CSS so that it stands out</li><li>style the disabled form to "look" unusable (use the :disabled selector in CSS3)</li><li>add a &lt;noscript&gt; tag containing an informational cookie message, in case the user has
+disabled JavaScript</li></ul></article><p class="blog-date">Posted 1/3/2013</p><div id="blog-categories"><h3><a href="/blog/category/">Blog Categories</a></h3><ul><li><a href="/blog/category/django/">django</a>
+(2)</li><li><a href="/blog/category/environment/">environment</a>
+(1)</li><li><a href="/blog/category/math/">math</a>
+(2)</li><li><a href="/blog/category/python/">python</a>
+(2)</li><li><a href="/blog/category/tango/">tango</a>
+(5)</li><li><a href="/blog/category/web-development/">web development</a>
+(1)</li></ul></div></div></div></div></main><footer id="site-footer"><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav><span id="copyright">&copy;2012-2022 Christian&nbsp;Abbott | <a href="/contact/">Contact</a></span></footer></div></body></html>

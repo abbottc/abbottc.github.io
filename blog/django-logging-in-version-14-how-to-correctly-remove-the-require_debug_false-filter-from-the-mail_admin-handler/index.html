@@ -1,0 +1,146 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="Christian Abbott"><title>Django logging in version 1.4: How to correctly remove the require_debug_false filter from the mail_admin handler | Creatively... Do!</title><link rel="icon" href="/static/img/favicon.ico" sizes="16x16"><link rel="stylesheet" href="/static/css/main.d937955df70f008c0984.min.css"><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)
+</script><script>let _gaq = _gaq || []
+_gaq.push(['_setAccount', 'UA-35393164-2'])
+_gaq.push(['_trackPageview'])
+(function() {
+  let ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'
+  let s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s)
+})()</script></head><body><div id="main-grid"><header id="site-header"><a id="header-home" href="/">Creatively&nbsp;Do!</a><input id="header-menu-btn" type="checkbox"><label id="header-menu-icon" for="header-menu-btn"><div class="header-nav-icon"></div><div class="header-nav-icon header-nav-icon-mid"></div><div class="header-nav-icon"></div></label><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav></header><main><div id="border"><div id="pushin"><h1 id="page-title">Django logging in version 1.4: How to correctly remove the require_debug_false filter from the mail_admin handler</h1><nav class="breadcrumb"><a href="/">Home</a><a href="/blog/">Blog</a>Django logging in version 1.4: How to correctly remove the require_debug_false filter from the mail_admin handler</nav><div><article id="blog-article"><p>There you are, configuring some shiny new django website of yours, and you want to test some
+of the logging features. And because you're testing in a development environment, you have
+<code>DEBUG=True</code> in your <code>settings.py</code> file. But the problem is, you're not seeing
+the admin logging emails you are expecting. So, you check the <code>LOGGING</code> variable in
+<code>settings.py</code> to see if you missed something. It looks something like this by default:
+</p><pre class="lang-python"><code>LOGGING <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">'version'</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">'disable_existing_loggers'</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+    <span class="token string">'filters'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'require_debug_false'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token string">'()'</span><span class="token punctuation">:</span> <span class="token string">'django.utils.log.RequireDebugFalse'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">'handlers'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'mail_admins'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token string">'level'</span><span class="token punctuation">:</span> <span class="token string">'ERROR'</span><span class="token punctuation">,</span>
+            <span class="token string">'filters'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'require_debug_false'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token string">'class'</span><span class="token punctuation">:</span> <span class="token string">'django.utils.log.AdminEmailHandler'</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">'loggers'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'django.request'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token string">'handlers'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'mail_admins'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token string">'level'</span><span class="token punctuation">:</span> <span class="token string">'ERROR'</span><span class="token punctuation">,</span>
+            <span class="token string">'propagate'</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>And there you see it. This section:</p><pre class="lang-python"><code><span class="token string">'handlers'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">'mail_admins'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'level'</span><span class="token punctuation">:</span> <span class="token string">'ERROR'</span><span class="token punctuation">,</span>
+        <span class="code-em">'filters': ['require_debug_false'],</span>
+        <span class="token string">'class'</span><span class="token punctuation">:</span> <span class="token string">'django.utils.log.AdminEmailHandler'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span></code></pre><p>It looks like that handler is configured to do jack squat if <code>DEBUG=True</code>.
+"<em>Ha!</em>", you think to yourself. There's the problem. You just need to comment out that
+filter and all will be right with the world, cancer will be cured, and there will be no
+global warming apocalypse. So, you do something like this:
+</p><pre class="lang-python"><code><span class="token string">'handlers'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">'mail_admins'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'level'</span><span class="token punctuation">:</span> <span class="token string">'ERROR'</span><span class="token punctuation">,</span>
+        <span class="code-em">#'filters': ['require_debug_false'],</span>
+        <span class="token string">'class'</span><span class="token punctuation">:</span> <span class="token string">'django.utils.log.AdminEmailHandler'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span></code></pre><p>And when you retest the logging code that should send you an admin email, you get nothing. No
+change. Not one thing.
+</p><p>And then, you contemplate changing careers.</p><p>Well, don't worry, and step away from that thirteenth floor ledge...</p><p>If you do a little digging into the <code>LOGGING</code> dictionary while your Django site is
+running, you'll notice something interesting about that filter. It's extremely pernicious.
+If you remove it, it will refuse to go away. You can remove the filter from the handler
+(as above), and you can even remove the whole filter itself from the <code>LOGGING</code>
+dictionary, and it won't matter. In fact, depending on what you try, you may even find
+two or more of the same exact filter at run-time with slightly altered names. It's like a
+zombie filter. The thing just won't die.
+</p><p>The calm, rational, and rather banal reason for this sanity-eroding voodoo
+<a href="https://django.readthedocs.org/en/latest/releases/1.4.html#request-exceptions-are-now-always-logged" target="_blank">can be found here</a>.
+</p><p>In short, Django 1.4 is coded to stick the filter back in if it's missing. This is done to
+mimic version 1.3, which didn't provide this optional filter, and instead simply never sent
+admin emails when <code>DEBUG=True</code>. This is great news for anyone with existing version
+1.3 projects, because their websites work the same when they upgrade. It's probably not the
+best news for you, though, if you found this blog post only after creating a forehead-shaped
+dent in your desk.
+</p><p>If you want to see the bit of code responsible for your self-inflicted head injuries, check
+out the <code>compat_patch_logging_config()</code> function located in
+<code>/path/to/python/site-packages/django/conf/__init__.py</code>:
+</p><pre class="lang-python"><code><span class="token keyword">def</span> <span class="token function">compat_patch_logging_config</span><span class="token punctuation">(</span>logging_config<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Backwards-compatibility shim for #16288 fix. Takes initial value of
+    ``LOGGING`` setting and patches it in-place (issuing deprecation warning)
+    if "mail_admins" logging handler is configured but has no filters.
+
+    """</span>
+    <span class="token comment">#  Shim only if LOGGING["handlers"]["mail_admins"] exists,</span>
+    <span class="token comment">#  but has no "filters" key</span>
+    <span class="token keyword">if</span> <span class="token string">"filters"</span> <span class="token keyword">not</span> <span class="token keyword">in</span> logging_config<span class="token punctuation">.</span>get<span class="token punctuation">(</span>
+        <span class="token string">"handlers"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>get<span class="token punctuation">(</span>
+        <span class="token string">"mail_admins"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token string">"filters"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+        warnings<span class="token punctuation">.</span>warn<span class="token punctuation">(</span>
+            <span class="token string">"You have no filters defined on the 'mail_admins' logging "</span>
+            <span class="token string">"handler: adding implicit debug-false-only filter. "</span>
+            <span class="token string">"See http://docs.djangoproject.com/en/dev/releases/1.4/"</span>
+            <span class="token string">"#request-exceptions-are-now-always-logged"</span><span class="token punctuation">,</span>
+            PendingDeprecationWarning<span class="token punctuation">)</span>
+
+        filter_name <span class="token operator">=</span> <span class="token string">"require_debug_false"</span>
+
+        filters <span class="token operator">=</span> logging_config<span class="token punctuation">.</span>setdefault<span class="token punctuation">(</span><span class="token string">"filters"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token keyword">while</span> filter_name <span class="token keyword">in</span> filters<span class="token punctuation">:</span>
+            filter_name <span class="token operator">=</span> filter_name <span class="token operator">+</span> <span class="token string">"_"</span>
+
+        filters<span class="token punctuation">[</span>filter_name<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token string">"()"</span><span class="token punctuation">:</span> <span class="token string">"django.utils.log.RequireDebugFalse"</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+
+        logging_config<span class="token punctuation">[</span><span class="token string">"handlers"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"mail_admins"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"filters"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>filter_name<span class="token punctuation">]</span></code></pre><p>Now take a moment of remorseful silence for yourself.</p><h3>The Solution</h3><p>Luckily, this problem is dead easy to fix. If you want to remove the filter (for real), you
+just need to specify an empty list of filters, instead of removing the whole line. It will
+look like this:
+</p><pre class="lang-python"><code><span class="token string">'handlers'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">'mail_admins'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'level'</span><span class="token punctuation">:</span> <span class="token string">'ERROR'</span><span class="token punctuation">,</span>
+        <span class="code-em">'filters': [],</span>
+        <span class="token string">'class'</span><span class="token punctuation">:</span> <span class="token string">'django.utils.log.AdminEmailHandler'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span></code></pre><p>That's it. Django will not second-guess your <code>LOGGING</code> configuration, and you'll
+get the behavior you expect.
+</p><h4>But wait just one razzin-frazzin minute here...</h4><p>I know. By this point, there are a few of you (the detail-oriented ones) who did actually
+read the bit of Django documentation or the function code above. And you noticed something
+which would have made this problem a lot simpler to figure out. In fact, I can almost
+guarantee you wouldn't even be here if it weren't for one other missing tidbit of
+information. In this case, information about Python, not Django.
+</p><p>What may have caught your eye is that the Django developers were looking out for you. They
+provided a very nice DeprecationWarning message that gets printed under exactly this
+situation. The message explains that the filter you removed will be added back in, and it
+gives you a website link containing all the low-down on why that is. Isn't that great?
+Doesn't that make you happy?
+</p><p>Wait, what's that? You didn't see that warning message ever print up in any console anywhere?
+Yeah, I know.
+</p><h4>The Ultimate Reason You Are Here</h4><p>It's because of Python version 2.7 and higher. If you've gotten this far in this blog, I'm
+betting that's what you are using. As of version 2.7, Python changed the default behavior so
+that DeprecationWarning messages and a few other similar kinds of messages are no longer
+displayed by default. This makes sense, since lots of people use Python today that aren't
+developers. If end users see weird messages, they probably complain to developers. Those
+developers then have to stop coding (or napping) long enough to tell them to just ignore it.
+Which, let's face it, just creates a world of suspicious and skeptical end users who could
+turn against us at any moment.
+</p><p>Anyway, it's an easy thing to change:</p><p>Create a global environment variable called <code>PYTHONWARNINGS</code> and set it to
+<code>default</code> (or just <code>d</code> works too, if you're in that much of a rush). Now you
+will see all those (sometimes important) warning messages again. If you are using Linux,
+one way to permanently create this environment variable is to add this line to the end of
+your <code>~/.profile</code> or <code>~/.bashrc</code> or <code>~/.zshrc</code> or similar file:
+</p><pre class="lang-rss"><code>export PYTHONWARNINGS="default"</code></pre><p>Log out and back in, and you're all set.</p><p>If you're using Windows rather than Linux, then you're probably used to paying money for
+things that are otherwise available for free, so send me a check and I'll tell you what to
+do on your operating system.</p></article><p class="blog-date">Posted 1/3/2013</p><div id="blog-categories"><h3><a href="/blog/category/">Blog Categories</a></h3><ul><li><a href="/blog/category/django/">django</a>
+(2)</li><li><a href="/blog/category/environment/">environment</a>
+(1)</li><li><a href="/blog/category/math/">math</a>
+(2)</li><li><a href="/blog/category/python/">python</a>
+(2)</li><li><a href="/blog/category/tango/">tango</a>
+(5)</li><li><a href="/blog/category/web-development/">web development</a>
+(1)</li></ul></div></div></div></div></main><footer id="site-footer"><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav><span id="copyright">&copy;2012-2022 Christian&nbsp;Abbott | <a href="/contact/">Contact</a></span></footer></div></body></html>

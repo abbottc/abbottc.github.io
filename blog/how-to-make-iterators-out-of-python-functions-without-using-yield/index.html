@@ -1,0 +1,36 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="Christian Abbott"><title>How to make iterators out of Python functions without using yield | Creatively... Do!</title><link rel="icon" href="/static/img/favicon.ico" sizes="16x16"><link rel="stylesheet" href="/static/css/main.d937955df70f008c0984.min.css"><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)
+</script><script>let _gaq = _gaq || []
+_gaq.push(['_setAccount', 'UA-35393164-2'])
+_gaq.push(['_trackPageview'])
+(function() {
+  let ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'
+  let s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s)
+})()</script></head><body><div id="main-grid"><header id="site-header"><a id="header-home" href="/">Creatively&nbsp;Do!</a><input id="header-menu-btn" type="checkbox"><label id="header-menu-icon" for="header-menu-btn"><div class="header-nav-icon"></div><div class="header-nav-icon header-nav-icon-mid"></div><div class="header-nav-icon"></div></label><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav></header><main><div id="border"><div id="pushin"><h1 id="page-title">How to make iterators out of Python functions without using yield</h1><nav class="breadcrumb"><a href="/">Home</a><a href="/blog/">Blog</a>How to make iterators out of Python functions without using yield</nav><div><article id="blog-article"><p>The built-in <code>iter()</code> method in Python 2.2 and later hides a neat trick which is not
+well-known.  Typically <code>iter()</code> is used to return an iterator from an iterable object:
+</p><pre class="lang-python"><code>i <span class="token operator">=</span> <span class="token builtin">iter</span><span class="token punctuation">(</span>iterable_object<span class="token punctuation">)</span>
+<span class="token builtin">next</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span></code></pre><p>However, <code>iter()</code> can also be used in an entirely different way.  If you have a
+function that you need to call multiple times until a particular value is returned, then
+<code>iter()</code> will let you wrap that function into a convenient iterator. To do this, pass
+the function as the first argument, and the return value to end with as the second argument:
+</p><pre class="lang-python"><code><span class="token builtin">iter</span><span class="token punctuation">(</span>repeated_function<span class="token punctuation">,</span> stop_value<span class="token punctuation">)</span></code></pre><p>For example, you could read a text file until you reached a certain text marker:</p><pre class="lang-python"><code><span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'file.txt'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+    <span class="token keyword">for</span> line <span class="token keyword">in</span> <span class="token builtin">iter</span><span class="token punctuation">(</span>f<span class="token punctuation">.</span>readline<span class="token punctuation">,</span> <span class="token string">'#~END_OF_IMPORTANT_TEXT'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        do_something<span class="token punctuation">(</span>line<span class="token punctuation">)</span></code></pre><p>One restriction is that the function passed to <code>iter()</code> can't take any arguments.
+You can use either a lambda expression, or <code>functools.partial()</code> to "fill in" a
+function's arguments before using it with <code>iter()</code>. For example, here are two ways
+you could read 4KB at a time from a source object that has a file-like <code>read()</code> method:
+</p><pre class="lang-python"><code><span class="token comment"># Using a lambda expression</span>
+<span class="token keyword">for</span> chunk <span class="token keyword">in</span> <span class="token builtin">iter</span><span class="token punctuation">(</span><span class="token keyword">lambda</span><span class="token punctuation">:</span> some_source<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token number">4096</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    do_something<span class="token punctuation">(</span>chunk<span class="token punctuation">)</span>
+
+<span class="token comment"># Using functools.partial()</span>
+<span class="token keyword">from</span> functools <span class="token keyword">import</span> partial
+read_chunk <span class="token operator">=</span> partial<span class="token punctuation">(</span>some_source<span class="token punctuation">.</span>read<span class="token punctuation">,</span> <span class="token number">4096</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> chunk <span class="token keyword">in</span> <span class="token builtin">iter</span><span class="token punctuation">(</span>read_chunk<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    do_something<span class="token punctuation">(</span>chunk<span class="token punctuation">)</span></code></pre></article><p class="blog-date">Posted 11/2/2013</p><div id="blog-categories"><h3><a href="/blog/category/">Blog Categories</a></h3><ul><li><a href="/blog/category/django/">django</a>
+(2)</li><li><a href="/blog/category/environment/">environment</a>
+(1)</li><li><a href="/blog/category/math/">math</a>
+(2)</li><li><a href="/blog/category/python/">python</a>
+(2)</li><li><a href="/blog/category/tango/">tango</a>
+(5)</li><li><a href="/blog/category/web-development/">web development</a>
+(1)</li></ul></div></div></div></div></main><footer id="site-footer"><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav><span id="copyright">&copy;2012-2022 Christian&nbsp;Abbott | <a href="/contact/">Contact</a></span></footer></div></body></html>

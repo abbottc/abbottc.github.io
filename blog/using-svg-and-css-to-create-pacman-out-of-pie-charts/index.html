@@ -1,0 +1,194 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="Christian Abbott"><title>Using SVG and CSS to create Pacman (out of pie charts) | Creatively... Do!</title><link rel="icon" href="/static/img/favicon.ico" sizes="16x16"><link rel="stylesheet" href="/static/css/main.d937955df70f008c0984.min.css"><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)
+</script><script>let _gaq = _gaq || []
+_gaq.push(['_setAccount', 'UA-35393164-2'])
+_gaq.push(['_trackPageview'])
+(function() {
+  let ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'
+  let s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s)
+})()</script><style>@font-face { font-family: "SourceCodePro"; src: url("/static/fonts/SourceCodePro-Regular.woff2") format("woff2"); }</style></head><body><div id="main-grid"><header id="site-header"><a id="header-home" href="/">Creatively&nbsp;Do!</a><input id="header-menu-btn" type="checkbox"><label id="header-menu-icon" for="header-menu-btn"><div class="header-nav-icon"></div><div class="header-nav-icon header-nav-icon-mid"></div><div class="header-nav-icon"></div></label><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav></header><main><div id="border"><div id="pushin"><h1 id="page-title">Using SVG and CSS to create Pacman (out of pie charts)</h1><nav class="breadcrumb"><a href="/">Home</a><a href="/blog/">Blog</a>Using SVG and CSS to create Pacman (out of pie charts)</nav><div><article id="blog-article"><p><a href="https://youtu.be/eVnUDTtOLE0" target="_blank">Lea Verou has a wonderful talk</a> about various
+techniques we can use to create a pie chart purely in HTML/CSS. The techniques are clever
+and interesting, but pie charts are a little boring. So let's modify one of her ideas and
+create Pacman instead.
+</p><p>Waka-waka-waka-waka... And away we go...</p><h2>Pacman at his core: the SVG circle</h2><p>The main idea we'll use from her talk is to manipulate the SVG spec for dashed borders --
+because half of all web development is taking a spec and manipulating it beyond recognition
+to achieve something it was never meant to do. Lea Verou discusses this SVG technique in her
+talk <a href="https://youtu.be/eVnUDTtOLE0?t=27m" target="_blank">about 27 minutes in</a>.
+</p><p>You don't need to be familiar with SVG to follow this post. But if it's new and you want to
+learn more,
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial" target="_blank">Mozilla has a tutorial</a>.
+For our purposes, we only need it for creating a circle. So, let's start with that:
+</p><p>HTML:</p><pre class="lang-svg"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>svg</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pacman<span class="token punctuation">"</span></span> <span class="token attr-name">viewbox</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0 0 100 100<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>circle</span> <span class="token attr-name">cx</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>50%<span class="token punctuation">"</span></span> <span class="token attr-name">cy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>50%<span class="token punctuation">"</span></span> <span class="token attr-name">r</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>25%<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>svg</span><span class="token punctuation">></span></span></code></pre><p>Things to note:</p><ul><li><code>viewbox</code>: creates a 100x100 area for creating our circle. These are drawing
+dimensions, but the element's size on the page is set later in CSS.</li><li><code>cx</code> and <code>cy</code>: place the circle's center coordinate (x, y) in the exact middle
+of the viewbox</li><li><code>r</code>: sets the circle's radius to be a quarter of the viewbox size</li></ul><p>That's really all the HTML we need. The rest can be done in CSS, since CSS can include
+SVG-specific styles. So, let's add some CSS to see what this looks like:
+</p><p>CSS:</p><pre class="lang-css"><code><span class="token selector">#pacman</span> <span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> black<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">#pacman circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p><svg class="pacman pacman-example" viewbox="0 0 100 100"><circle class="pac-v1" cx="50%" cy="50%" r="25%"></circle></svg></p><p>Things to note:</p><ul><li>The black background isn't important, but allows us to see the viewbox dimensions</li><li><code>stroke</code>: sets the color of the line of the circle</li><li><code>fill</code>: we don't want the circle filled with any color</li><li>Using anything other than traditional Pacman yellow for <code>stroke</code> would be blasphemy</li></ul><p>So, why make the radius 25%? Don't we want the circle to completely fill the viewbox? Yes.
+Stay tuned. And don't we want the circle filled in? Again, yes. Geez, I said stay tuned.
+</p><h2>Pacman isn't Pacman without a mouth</h2><p>The first useful SVG property we can abuse in our CSS is <code>stroke-dasharray</code>, which
+creates a dashed line around the circle. Of course, CSS provides <code>border-style: dashed</code>
+to do the same thing, but the SVG version is super-charged. It allows a degree of fine-tuning
+that would make a micro-manager salivate. Skipping over the details
+(<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray" target="_blank">read more here</a>),
+we will set two numbers. The first sets the dash length, and the second sets the gap
+length between dashes. For example, dashes of length 20 with gap length 5 look like this:
+</p><pre class="lang-css"><code><span class="token selector">#pacman circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 20<span class="token punctuation">,</span>5<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p><svg class="pacman pacman-example" viewbox="0 0 100 100"><circle class="pac-v1 pac-v2" cx="50%" cy="50%" r="25%"></circle></svg></p><p>Let's bastardize this to create the outline for Pacman's open mouth. We'll create a dash
+length that goes 80% of the way around the circle to depict Pacman, and a large enough gap
+length for the remaining way around to depict the mouth. Unfortunately, we can't simply plug
+in 80% into <code>stroke-dasharray</code> because the spec doesn't calculate that percent
+based on the circle's circumference. Instead, it's time for a tiny geometry excursion:
+</p><h2>If you survive the math, you get cake</h2><p>We can find the circle's circumference as pi * diameter. We've set the SVG viewbox to
+100x100, and the radius to 25% of that, which makes the radius 25 and the diameter 50. The
+circumference must be pi * 50, or about 157. Taking 80% of 157 we get 126. So, we want to set
+the dash length to 126 to go 80% around the circle. The gap length must at least fill the
+remaining 20% of the circle, but it doesn't matter how large it is beyond that minimum. We'll
+pick an ample 100. It looks like this:
+</p><pre class="lang-css"><code><span class="token selector">#pacman circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 126<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p><svg class="pacman pacman-example" viewbox="0 0 100 100"><circle class="pac-v1 pac-v3" cx="50%" cy="50%" r="25%"></circle></svg></p><h2>Sobering up Pacman with dashoffset</h2><p>Alright, that is one lazy-looking Pacman. Like, he's laid back hoping ghosts will fall out of
+the sky into his mouth. The dash we created begins at the right-most point of the circle and
+proceeds clockwise. To straighten him out so he's facing full right, let's abuse a second
+useful SVG property called <code>stroke-dashoffset</code>. It sets where to begin within the
+dash-gap pattern when drawing. Since the circle starts from the far right, we want the
+pattern to start within the gap portion, and the gap portion should last half the mouth's
+length before the dash begins. That means the pattern offset needs to be negative in order to
+start before the dash, and the value should be half the mouth length.
+</p><p>Since the circumference is 157, and the dash is length 126, the mouth must have length
+<span>class="nowrap" 157 - 126 = 31</span>. Half of that is about 15, so -15 is the correct offset.
+Setting it looks like this:
+</p><pre class="lang-css"><code><span class="token selector">#pacman circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 126<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+  <span class="token property">stroke-dashoffset</span><span class="token punctuation">:</span> -15<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p><svg class="pacman pacman-example" viewbox="0 0 100 100"><circle class="pac-v1 pac-v3 pac-v4" cx="50%" cy="50%" r="25%"></circle></svg></p><p>There are other ways to accomplish that, for example you might use the CSS property
+<code>transform: rotate()</code>.
+</p><h2>Pacman's empty existence</h2><p>Great, so now we have a hollow Pacman. Time to make him the solid chomper he really is. The
+fourth useful SVG property we can Macgyver to our advantage is <code>stroke-width</code>, which
+sets the width of our yellow line. For example, here is a stroke-width of 10%:
+</p><pre class="lang-css"><code><span class="token selector">#pacman circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 126<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+  <span class="token property">stroke-dashoffset</span><span class="token punctuation">:</span> -15<span class="token punctuation">;</span>
+  <span class="token property">stroke-width</span><span class="token punctuation">:</span> 10%<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p><svg class="pacman pacman-example" viewbox="0 0 100 100"><circle class="pac-v1 pac-v3 pac-v4 pac-v5" cx="50%" cy="50%" r="25%"></circle></svg></p><p>Notice how the line expands in both directions equally (towards and away from the circle's
+center). This means a <code>stroke-width</code> of 50% will expand the line all the way in to
+the center, but also all the way out to another full radius length. Let's do that, and now it
+should be clear why we set the radius to 25%. We had to accomodate this expansion in both
+directions.
+</p><pre class="lang-css"><code><span class="token selector">#pacman circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 126<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+  <span class="token property">stroke-dashoffset</span><span class="token punctuation">:</span> -15<span class="token punctuation">;</span>
+  <span class="token property">stroke-width</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p><svg class="pacman pacman-example" viewbox="0 0 100 100"><circle class="pac-v1 pac-v3 pac-v4 pac-v6" cx="50%" cy="50%" r="25%"></circle></svg></p><h2>And yet it moves</h2><p>Pacman still looks rather catatonic. Like a ghost needs to go poke him with a stick. Or like
+your MAME emulator just froze. Luckily, we can animate CSS properties. If that's a new
+concept,
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations" target="_blank">Mozilla's got your back again</a>.
+The closed mouth position is simply a dash of length 157 with an offset of 0. Those
+properties can be moved into a <code>keyframe</code> to animate between the two states, like this:
+</p><pre class="lang-css"><code><span class="token selector">#pacman circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">stroke-width</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+  <span class="token property">animation</span><span class="token punctuation">:</span> chomp 0.15s linear infinite alternate<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@keyframes</span> chomp</span> <span class="token punctuation">{</span>
+  <span class="token selector">from</span> <span class="token punctuation">{</span>
+    <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 157<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+    <span class="token property">stroke-dashoffset</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token selector">to</span> <span class="token punctuation">{</span>
+    <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 126<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+    <span class="token property">stroke-dashoffset</span><span class="token punctuation">:</span> -15<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p><svg class="pacman pacman-example" viewbox="0 0 100 100"><circle class="pac-v1 pac-v6 pac-v7" cx="50%" cy="50%" r="25%"></circle></svg></p><h2>Waka-waka-waka</h2><p>Pacman still needs an environment to run around in. The following explores that idea a bit.</p><pre class="lang-html"><code><span class="token comment">&lt;!-- HTML --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pacman-environment<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>border<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>path<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dots<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>svg</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pacman<span class="token punctuation">"</span></span> <span class="token attr-name">viewbox</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0 0 100 100<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>circle</span> <span class="token attr-name">cx</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>50%<span class="token punctuation">"</span></span> <span class="token attr-name">cy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>50%<span class="token punctuation">"</span></span> <span class="token attr-name">r</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>25%<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>circle</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>svg</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>border<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></code></pre><pre class="lang-css"><code><span class="token comment">/* CSS */</span>
+<span class="token atrule"><span class="token rule">@keyframes</span> chomp</span> <span class="token punctuation">{</span>
+  <span class="token selector">from</span> <span class="token punctuation">{</span>
+    <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 157<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+    <span class="token property">stroke-dashoffset</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token selector">to</span> <span class="token punctuation">{</span>
+    <span class="token property">stroke-dasharray</span><span class="token punctuation">:</span> 126<span class="token punctuation">,</span>100<span class="token punctuation">;</span>
+    <span class="token property">stroke-dashoffset</span><span class="token punctuation">:</span> -15<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token atrule"><span class="token rule">@keyframes</span> dots</span> <span class="token punctuation">{</span>
+  <span class="token selector">from</span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 95%<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token selector">to</span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 5%<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.pacman-environment</span> <span class="token punctuation">{</span>
+  <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> black<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">overflow</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.border</span> <span class="token punctuation">{</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 12px<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">border-radius</span><span class="token punctuation">:</span> 12px<span class="token punctuation">;</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> 3px solid #2121de<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.path</span> <span class="token punctuation">{</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token property">margin</span><span class="token punctuation">:</span> 10px -200px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.pacman</span> <span class="token punctuation">{</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">circle</span> <span class="token punctuation">{</span>
+  <span class="token property">stroke</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">stroke-width</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+  <span class="token property">fill</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+  <span class="token property">animation</span><span class="token punctuation">:</span> chomp .15s linear infinite alternate<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.dots</span> <span class="token punctuation">{</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> right<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">background-image</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>to left<span class="token punctuation">,</span> #ddd 20%<span class="token punctuation">,</span> transparent 0%<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">background-position</span><span class="token punctuation">:</span> center right<span class="token punctuation">;</span>
+  <span class="token property">background-size</span><span class="token punctuation">:</span> 50px 10px<span class="token punctuation">;</span>
+  <span class="token property">background-repeat</span><span class="token punctuation">:</span> repeat-x<span class="token punctuation">;</span>
+  <span class="token property">animation</span><span class="token punctuation">:</span> dots 5s linear infinite<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p>Producing this:</p><div class="pacman-environment"><div class="border"></div><div class="path"><div class="dots"><svg class="pacman pacman-final" viewbox="0 0 100 100"><circle class="pac-v1 pac-v6 pac-v7" cx="50%" cy="50%" r="25%"></circle></svg></div></div><div class="border"></div></div><h2>Conclusion</h2><p>The fact that this all stemmed from a video on pie charts proves just how questionably I
+use my free time.</p></article><p class="blog-date">Posted 5/23/2017</p><div id="blog-categories"><h3><a href="/blog/category/">Blog Categories</a></h3><ul><li><a href="/blog/category/django/">django</a>
+(2)</li><li><a href="/blog/category/environment/">environment</a>
+(1)</li><li><a href="/blog/category/math/">math</a>
+(2)</li><li><a href="/blog/category/python/">python</a>
+(2)</li><li><a href="/blog/category/tango/">tango</a>
+(5)</li><li><a href="/blog/category/web-development/">web development</a>
+(1)</li></ul></div></div></div></div></main><footer id="site-footer"><nav role="navigation"><a href="/">Home</a><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/programs/">Apps</a></nav><span id="copyright">&copy;2012-2022 Christian&nbsp;Abbott | <a href="/contact/">Contact</a></span></footer></div></body></html>
